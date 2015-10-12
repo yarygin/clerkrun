@@ -56,6 +56,7 @@ var mainState = {
             this.scale.x = 1;
         };
         player.jump = function(){
+            console.log("jump");
             if(this.isStands() || this.jumpCounter < 2){
                 this.body.velocity.y = this.body.velocity.y-150;
                 this.jumpCounter ++ ;
@@ -86,12 +87,8 @@ var mainState = {
     },
     update: function update(){
         // this.background.tilePosition.x -= this.player.body.velocity.x / 90;
-        game.physics.arcade.collide(this.player, this.platforms, function (m, p) {
-            this.player.setStands(m.body.touching.down);
-            return true;
-        }, function (m, p) {
-            return true;
-        }, this);
+
+        if(game.input.activePointer.isDown) this.player.jump();
         this.ground.tilePosition.x -= 1;
         if(!this.bush.inWorld && this.bush.body.x < 0) {
             this.bush.body.x = game.world.width+64;
