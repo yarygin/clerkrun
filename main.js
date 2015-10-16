@@ -11,6 +11,10 @@ var mainState = {
         // game.load.image('block', 'assets/pipe.png');
         game.load.image('ground', 'assets/grass.png');
         game.load.image('bush', 'assets/bush.png');
+        game.load.image('fatsheep', 'assets/fatsheep.png');
+        game.load.image('smallsheep', 'assets/smallsheep.png');
+        game.load.image('oldman', 'assets/oldman.png');
+        game.load.image('dog', 'assets/dog44x32.png');
     },
     create: function create(){
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -56,7 +60,6 @@ var mainState = {
             this.scale.x = 1;
         };
         player.jump = function(){
-            console.log("jump");
             if(this.isStands() || this.jumpCounter < 2){
                 this.body.velocity.y = this.body.velocity.y-150;
                 this.jumpCounter ++ ;
@@ -87,11 +90,24 @@ var mainState = {
     },
     update: function update(){
         // this.background.tilePosition.x -= this.player.body.velocity.x / 90;
-
-        if(game.input.activePointer.isDown) this.player.jump();
-        this.ground.tilePosition.x -= 1;
-        if(!this.bush.inWorld && this.bush.body.x < 0) {
-            this.bush.body.x = game.world.width+64;
+        game.physics.arcade.overlap(this.smallsheep, this.player, function(){
+            this.player.angle = 90;
+            this.player.anchor.setTo(1, 0.5);
+            this.player.animations.stop(0, true);
+            this.player.alive = false;
+        }, null, this);
+        if(this.player.alive) {
+            if(game.input.activePointer.isDown) this.player.jump();
+            this.ground.tilePosition.x -= 1;
+            if(!this.bush.inWorld && this.bush.body.x < 0) {
+                this.bush.body.x = game.world.width+this.bush.width;
+            }
+            if(!this.fatsheep.inWorld && this.fatsheep.body.x < 0) {
+                this.fatsheep.body.x = game.world.width+this.fatsheep.width;
+            }
+            if(!this.smallsheep.inWorld && this.smallsheep.body.x < 0) {
+                this.smallsheep.body.x = game.world.width+this.smallsheep.width;
+            }
         }
     },
     backgroundInit: function(){
@@ -100,6 +116,22 @@ var mainState = {
         game.physics.arcade.enable(this.bush);
         this.bush.body.velocity.x = -100;
         this.ground = game.add.tileSprite(0, game.world.height-32, game.world.width+64, 64, 'ground');
+
+        this.fatsheep = game.add.tileSprite(128, game.world.height-64, 64, 64, 'fatsheep');
+        game.physics.arcade.enable(this.fatsheep);
+        this.fatsheep.body.velocity.x = -100;
+
+        this.oldman = game.add.tileSprite(232, game.world.height-64, 64, 64, 'oldman');
+        game.physics.arcade.enable(this.oldman);
+        this.oldman.body.velocity.x = -100;
+
+        this.dog = game.add.tileSprite(280, game.world.height-32, 44, 32, 'dog');
+        game.physics.arcade.enable(this.dog);
+        this.dog.body.velocity.x = -100;
+
+        this.smallsheep = game.add.tileSprite(382, game.world.height-32, 32, 32, 'smallsheep');
+        game.physics.arcade.enable(this.smallsheep);
+        this.smallsheep.body.velocity.x = -100;
     }
 };
 
